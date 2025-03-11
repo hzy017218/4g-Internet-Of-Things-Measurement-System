@@ -50,12 +50,12 @@ void Font_Test(void)
 	//Lcd_Clear(GRAY0);
 	Gui_DrawFont_GBK16(16,30,BLUE,WHITE,"STM32 4G GPS");
 	Gui_DrawFont_GBK16(16,50,BLUE,WHITE,"TCP/COAP/MQTT");
-	Gui_DrawFont_GBK16(16,70,RED,WHITE, "全程技术支持");
+	Gui_DrawFont_GBK16(16,70,RED,WHITE, "西安工程大学");
 }
 
 void Display_Menu(void)
 {
-	Gui_DrawFont_GBK16(10,70,GREEN,WHITE, "QQ:2357481431");
+	Gui_DrawFont_GBK16(10,70,GREEN,WHITE, "XPU-207-Lab");
 }
 
 void Color_Test(void)

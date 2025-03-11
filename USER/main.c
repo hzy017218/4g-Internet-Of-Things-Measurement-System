@@ -29,12 +29,16 @@ int main(void)
 	char strValue[12]; // 用于存储字符串，足够容纳最大值和结束符
 	char temp_disp[BUFLEN];	//温度显示
 	char dht[8];
-//	char *gpsStr; 	//GPS指向的位置
-//	char gpsDatalat[64];
-//	char gpsDatalon[64];
+	int last_temp1 = 0;
+    int last_temp2 = 0;
+	TemperatureData temps;
+	
 //	u16 adcx1,adcx2; //ADC1和ADC2数值
 //	char adcValue[8];
-
+	
+	
+	/**********************************初始化************************************************************/
+	
   delay_init();	    	 //延时函数初始化	  
   NVIC_Configuration(); 	 //设置NVIC中断分组2:2位抢占优先级，2位响应优先级
 	CSTX_4GCTR_Init();        //初始化CSTX_4G的供电引脚 对模块进行供电
@@ -44,11 +48,8 @@ int main(void)
 	Uart2_SendStr("UART2 Init Successful\r\n");
 	uart3_init(115200);
 	Uart3_SendStr("UART3 Init Successful\r\n");
-	RS485_Init(115200);
+	RS485_Init(9600);
 	RS485_SendStr("RS485 Init Successful\r\n");
-	
-	printf("\r\n ############ http://www.csgsm.com/ ############\r\n ############("__DATE__ " - " __TIME__ ")############\r\n"); 
-	
 	LED_Init();		  		//初始化与LED连接的硬件接口
 	
 	//////////下面是液晶屏显示代码///////////////////////////
@@ -70,51 +71,146 @@ int main(void)
 	DHT11_Init();	//初始化温湿度 用PA11
 	Adc_Init();	  	//ADC初始化
 	TIM3_Int_Init(4999,7199);//100ms触发一次  
+	PT100_init();
+	
+	
+//	/**********************************开机发送************************************************************/
+//	Get_PT100_data();
+//	delay_ms(1200);
+//	PT100_data();
+//	memset(dht,0,8);
+//	sprintf(dht,"%d",data_t);
+//	SendData_aliyunStudio("temp",(char *)dht);//发送温度数据
+//	
+//	memset(temp_disp,0,BUFLEN);
+//	sprintf(temp_disp,"temp1:%d,temp2:%d",data_t,DHT11_Data.humi_int);	//温湿度打印到数组
+//	Gui_DrawFont_GBK16(0,50,RED,WHITE, (u8*)temp_disp); //温湿度显示到液晶屏	
 	
 	while(1)
-  {  
-//			gpsStr = NULL;
-			Control_Led();
-			if ((value_shiji - last_value >= 1) || (value_shiji - last_value <= -1)) 
-				{
-					sprintf(strValue, "%u", value_shiji);
-					SendData_aliyunStudio("485", (char *)strValue);
-					printf("Parsed Data: %u\n", value_shiji);
-					last_value = value_shiji; 
-					
-					memset(strValue,0,BUFLEN);
-					sprintf(strValue,"Tension:%d",value_shiji);	//高度打印到数组
-					Gui_DrawFont_GBK16(0,90,RED,WHITE,(u8*)strValue);
-				}
-			if(time3_5s >= 7200)	//定时器 60    秒钟发送一次数据
-			{							
-					//下面是高度的发送/////////////////////////////////////////////////////////////
-							sprintf(strValue, "%u", value_shiji);
-							SendData_aliyunStudio("485", (char *)strValue);
-							printf("Parsed Data: %u\n", value_shiji);
-							last_value = value_shiji; 
-							
-							memset(strValue,0,BUFLEN);
-							sprintf(strValue,"Tension:%d",value_shiji);	//高度打印到数组
-							Gui_DrawFont_GBK16(0,90,RED,WHITE,(u8*)strValue);
-							////////////////////////////////////////////////////////////////
+	{  
+	Control_Led();     //远程重启
+
+	Get_PT100_data();
+	delay_ms(500);  
+//			PT100_data(); 
+	temps = PT100_data();	  
+
+	/**********************************实时发送************************************************************/
+
+	/***********************高度实时发送******************************/
+
+	if ((value_shiji - last_value >= 1) || (value_shiji - last_value <= -1)) 
+	{
+		// 检查value_shiji 是否溢出
+		if (value_shiji > 65535) {
+				value_shiji = 65535;  
+		} 
+		sprintf(strValue, "%u", value_shiji);
+		SendData_aliyunStudio("485", (char *)strValue);
+		
+		printf("Parsed Data_Height: %u\n", value_shiji);
+		last_value = value_shiji; 
+		
+		memset(strValue,0,BUFLEN);
+		sprintf(strValue,"Height:%d",value_shiji);	//高度打印到数组
+		Gui_DrawFont_GBK16(10,90,RED,WHITE,(u8*)strValue);
+	}
+			
+		/***********************温度实时发送***************************/
+	
+	if ((temps.temperature1 - last_temp1 >= 1) || (temps.temperature1 - last_temp1 <= -1)) {
+		memset(dht, 0, 8);
+		sprintf(dht, "%d", temps.temperature1);
+		SendData_aliyunStudio("temp", (char *)dht);
+
+		memset(temp_disp, 0, BUFLEN);
+		sprintf(temp_disp, "Temp1:%d", temps.temperature1);
+		Gui_DrawFont_GBK16(10, 110, RED, WHITE, (u8*)temp_disp);
+
+		last_temp1 = temps.temperature1;
+		printf("Parsed Data----------Temp1: %d\n", temps.temperature1);
+	}
+
+	if ((temps.temperature2 - last_temp2 >= 1) || (temps.temperature2 - last_temp2 <= -1)) {
+		memset(dht, 0, 8);
+		sprintf(dht, "%d", temps.temperature2);
+		SendData_aliyunStudio("humi", (char *)dht);
+
+		memset(temp_disp, 0, BUFLEN);
+		sprintf(temp_disp, "Temp2:%d", temps.temperature2);
+		Gui_DrawFont_GBK16(10, 130, RED, WHITE, (u8*)temp_disp);
+
+		last_temp2 = temps.temperature2;
+		printf("Parsed Data----------Temp2: %d\n", temps.temperature2);
+	}
+			
+			
+			
+//			if ((data_t - last_temp >= 2) || (data_t - last_temp <= -2)) 
+//			{
+
+//				memset(dht, 0, 8);
+//				sprintf(dht, "%d", data_t);
+//				SendData_aliyunStudio("temp",(char *)dht);//发送温度数据
+//				printf("Parsed Data————Temp1: %d\n", data_t);  
+//				last_temp = data_t;
+
+//				memset(temp_disp, 0, BUFLEN);
+//				sprintf(temp_disp, "Temp1:%d", data_t);
+//				Gui_DrawFont_GBK16(0, 110, RED, WHITE, (u8*)temp_disp);
+//			}
+
 				
-							//下面是温湿度的发送//////////////////////////////////////////////////////////////
-							DHT11_Read_TempAndHumidity();
-							
-							memset(dht,0,8);
-							sprintf(dht,"%d",DHT11_Data.temp_int);
-							SendData_aliyunStudio("temp",(char *)dht);//发送温度数据
-							memset(dht,0,8);
-							sprintf(dht,"%d",DHT11_Data.humi_int);
-							SendData_aliyunStudio("humi",(char *)dht);//发送湿度数据
-												
-							memset(temp_disp,0,BUFLEN);
-							sprintf(temp_disp,"temp:%d,humi:%d",DHT11_Data.temp_int,DHT11_Data.humi_int);	//温湿度打印到数组
-							Gui_DrawFont_GBK16(0,50,RED,WHITE, (u8*)temp_disp); //温湿度显示到液晶屏			
-							////////////////////////////////////////////////////////////////
-							
-							
+				
+	/*********************************定时发送************************************************************/
+	
+	if(time3_5s >= 7200)	//定时器 60    秒钟发送一次数据
+	{							
+			/**********************高度定时发送****************************/
+		
+			sprintf(strValue, "%u", value_shiji);
+			SendData_aliyunStudio("485", (char *)strValue);
+			printf("Parsed Data: %u\n", value_shiji);
+			last_value = value_shiji; 
+			
+			memset(strValue,0,BUFLEN);
+			sprintf(strValue,"Height:%d",value_shiji);	//高度打印到数组
+			Gui_DrawFont_GBK16(10,90,RED,WHITE,(u8*)strValue);
+			////////////////////////////////////////////////////////////////
+
+			/**********************温度定时发送******************************/
+//							DHT11_Read_TempAndHumidity();
+			Get_PT100_data();
+			delay_ms(200);
+			temps = PT100_data();
+
+			memset(dht,0,8);
+			sprintf(dht,"%d",temps.temperature1);
+			SendData_aliyunStudio("temp",(char *)dht);//发送温度1
+
+			memset(dht,0,8);
+			sprintf(dht,"%d",temps.temperature2);
+			SendData_aliyunStudio("humi",(char *)dht);//发送温度2
+								
+			memset(temp_disp,0,BUFLEN);
+//			sprintf(temp_disp,"Temp1:%d Temp2:%d",temps.temperature1,temps.temperature2);	//温湿度打印到数组
+			sprintf(temp_disp,"Temp1:%d",temps.temperature1);	//温湿度打印到数组
+			Gui_DrawFont_GBK16(10,110,RED,WHITE, (u8*)temp_disp); //温湿度显示到液晶屏	
+
+			memset(temp_disp,0,BUFLEN);
+			sprintf(temp_disp,"Temp2:%d",temps.temperature2);
+			Gui_DrawFont_GBK16(10,130,RED,WHITE, (u8*)temp_disp); //温湿度显示到液晶屏	
+			////////////////////////////////////////////////////////////////
+									
+
+			LED1=!LED1; //系统运行指示灯
+		}
+  }	 
+}
+
+						
+
+
 //							//发送adc1 adc2 //////////////////////////////////////////////////////////////////////
 //							adcx1=Get_Adc_Average(ADC_Channel_10,10); //获取得到PC0的ADC1的值
 //							adcx2=Get_Adc_Average(ADC_Channel_11,10);
@@ -129,37 +225,6 @@ int main(void)
 //							sprintf(temp_disp,"ADC1:%2d,ADC2:%2d",(int)((float)adcx1/4096*100),(int)((float)adcx2/4096*100));	//温湿度打印到数组
 //							Gui_DrawFont_GBK16(0,130,BLACK,WHITE, (u8*)temp_disp); //温湿度显示到液晶屏			
 							//////////////////////////////////////////////////////////////////////////////////////////
-
-		}
-  }	 
-}
-
-							//							memset(gpsDatalat,0,64);    //维度清空
-//							memset(gpsDatalon,0,64);    //经度清空
-//							gpsStr=Get_GPS_RMC(1);      //获取维度 这个是经过纠偏的纬度
-//							if(gpsStr)	//如果获取到了
-//							{
-//								strcat(gpsDatalat,gpsStr);//传递维度
-//							}
-//							else	//还没定位好 就默认发北京的位置
-//							{
-//								strcat(gpsDatalat,"39.897445");//传递维度
-//							}
-//							
-//							gpsStr=Get_GPS_RMC(2);//获取维度 这个是经过纠偏的经度
-//							if(gpsStr)					  //获取到了经度
-//							{
-//								strcat(gpsDatalon,gpsStr);//传递经度
-//							}
-//							else	//还没定位好 就默认发北京的位置
-//							{
-//								strcat(gpsDatalon,"116.331398");//传递经度
-//							}
-//							
-//							Get_4GIMEI_NUM();  //读取IMEI卡的序列号
-//							SendData_aliyunStudio("longitude",gpsDatalon);//发送经度数据
-//							SendData_aliyunStudio("latitude",gpsDatalat);//发送纬度数据
-
 
 
 

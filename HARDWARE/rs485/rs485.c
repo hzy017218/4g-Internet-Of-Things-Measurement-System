@@ -16,14 +16,14 @@ u8 UART4_TX_BUF[UART4_SEND_LEN];     //接收缓冲,最大USART_REC_LEN个字节.
 //bit15，	接收完成标志
 //bit14，	接收到0x0d
 //bit13~0，	接收到的有效字节数目
-volatile uint8_t dataReady = 0; // 数据准备标志
 u16 UART4_RX_STA=0;       //接收状态标记
-uint32_t value_yuanshi;  // 定义解析出的32位无符号整数
-uint16_t value_shiji;
-uint16_t last_value;  // 定义解析出的16位无符号整数
-double value_xishu = 16.525;    //转换系数
 uint8_t UART4_RX_Index = 0;  // 当前接收字节的索引
-double value_yuliang = 0;    //调整余量
+
+
+uint8_t data1[8]={0X01,0X03,0X00,0X32,0X00,0X02,0X65,0XC4};
+uint8_t data2[8]={0X01,0X03,0X00,0X3A,0X00,0X01,0XA4,0X07};
+uint8_t data3[8]={0X01,0X03,0X00,0X3D,0X00,0X01,0X15,0XC6};
+uint8_t data4[8]={0X01,0X04,0X00,0X00,0X00,0X03,0XB0,0X0B};
 
 //初始化IO 串口2
 //pclk1:PCLK1时钟频率(Mhz)
@@ -82,89 +82,58 @@ void RS485_Init(u32 bound)
 }
 
 
-#if EN_UART4_RX   //如果使能了接收
-void UART4_IRQHandler(void) // 串口4中断服务程序
+static void Delay(__IO uint32_t nCount)	 //简单的延时函数
 {
-    uint8_t Res;
+	for(; nCount != 0; nCount--);
+}
 
-    if (USART_GetITStatus(UART4, USART_IT_RXNE) != RESET)  // 检查接收中断
+/***************** 发送一个字符  **********************/
+//使用单字节数据发送前要使能发送引脚，发送后要使能接收引脚。
+void _485_SendByte(  uint8_t ch )
+{
+	/* 发送一个字节数据到USART1 */
+	USART_SendData(UART4,ch);
+		
+	/* 等待发送完毕 */
+	while (USART_GetFlagStatus(UART4, USART_FLAG_TXE) == RESET);	
+	
+}
+/*****************  发送指定长度的字符串 **********************/
+void _485_SendStr_length( uint8_t *str,uint32_t strlen )
+{
+	unsigned int k=0;
+
+	_485_TX_EN()	;//	使能发送数据	
+    do 
     {
-        Res = USART_ReceiveData(UART4);  // 读取接收到的数据
-
-        // 将接收到的字节存储到缓冲区
-        UART4_RX_BUF[UART4_RX_Index++] = Res;
-  	// 检查是否接收到完整的9字节数据包
-        if (UART4_RX_Index >= 9) {
-            // 解析接收到的数据包
-			dataReady = 1;
-            if (UART4_RX_BUF[0] == 0x01 && UART4_RX_BUF[1] == 0x03 && UART4_RX_BUF[2] == 0x04) {
-                // 提取数据的第4到第7字节，并将其转换为32位无符号整数
-                value_yuanshi = (UART4_RX_BUF[3] << 24) | (UART4_RX_BUF[4] << 16) | 
-                        (UART4_RX_BUF[5] << 8) | UART4_RX_BUF[6];
-
-				value_shiji = 4000 - value_yuanshi/value_xishu + value_yuliang - 320;
-                // 输出数据，可以通过串口或其他方式打印
-				printf("Parsed Data: %u\n", value_shiji);
-            }
-
-            // 重置索引，准备接收下一个9字节的数据包
-            UART4_RX_Index = 0;
-        }
-
-        // 清除中断标志
-        USART_ClearITPendingBit(UART4, USART_IT_RXNE);  
-    }
+        _485_SendByte( *(str + k) );
+        k++;
+    } while(k < strlen);
+		
+	/*加短暂延时，保证485发送数据完毕*/
+	Delay(0x10FF);
+		
+	_485_RX_EN()	;//	使能接收数据
 }
 
-/*************************校验码计算函数*************************/
-unsigned int Crc_Count(unsigned char pbuf[],unsigned char num)
+
+/*****************  发送字符串 **********************/
+void _485_SendString(  uint8_t *str)
 {
-   int i,j;
-   unsigned int wcrc=0xffff;
-   for(i=0;i<num;i++)
-   {
-     wcrc^=(unsigned int)(pbuf[i]);
-		 for (j=0;j<8;j++)
-		 {
-				if(wcrc&0x0001)
-			{
-				 wcrc>>=1;
-				 wcrc^=0xa001;
-			}
-			else wcrc>>=1;		
-		 }
-   }   
-   return wcrc;
-}
-	//串口4,printf 函数
-//确保一次发送数据不超过USART3_MAX_SEND_LEN字节
-void printDeviceDataInHex(unsigned char* buffer, int length) {
-    int i;
-    printf("Device_Data:");
-
-	for (i = 0; i < length; i++) {
-        printf("%02X ", buffer[i]);  // 将每个字节格式化为两位的16进制数
-    }
-    printf("\r\n");
-}
-
-void u4_printf(char* fmt,...)  
-{  
-	u16 i,j; 
-	va_list ap; 
-	RS485_TX_EN=1;			//默认为接收模式
- 
-	va_start(ap,fmt);
-	vsprintf((char*)UART4_RX_BUF,fmt,ap);
-	va_end(ap);
-	i=strlen((const char*)UART4_RX_BUF);		//此次发送数据的长度
-	for(j=0;j<i;j++)							//循环发送数据
-	{
-	  while(USART_GetFlagStatus(UART4,USART_FLAG_TC)==RESET); //循环发送,直到发送完毕   
-		USART_SendData(UART4,UART4_RX_BUF[j]); 
-	} 
-	RS485_TX_EN=0;			//默认为接收模式
- 
+	unsigned int k=0;
+	
+	_485_TX_EN()	;//	使能发送数据
+	
+    do 
+    {
+        _485_SendByte(  *(str + k) );
+        k++;
+    } while(*(str + k)!='\0');
+	
+	/*加短暂延时，保证485发送数据完毕*/
+	Delay(0xFFF);
+		
+	_485_RX_EN()	;//	使能接收数据
 }
 
 /**********************************发送函数************************************************************/
@@ -187,22 +156,133 @@ void RS485_SendStr(char*SendBuf)//串口4打印数据
 	}
 }
 
-void USART_Transmit1(USART_TypeDef* USARTx,u8 data)//发送一个字节
-{ 
-   while(USART_GetFlagStatus(USARTx,USART_FLAG_TXE)==RESET);//发送寄存器空
-	 USART_SendData(USARTx,data);//发送单个数据//USART1->DR=*data++;
-	 while(USART_GetFlagStatus(USARTx,USART_FLAG_TC)==RESET);//等待数据帧发送完毕
+
+
+
+
+
+//中断缓存串口数据
+#define UART_BUFF_SIZE      1024
+volatile    uint16_t uart_p = 0;
+uint8_t     uart_buff[UART_BUFF_SIZE];
+char *pbuf; 
+int data_t;
+int last_temp = 0;
+
+void UART4_IRQHandler(void) // 串口4中断服务程序
+{
+
+    if(uart_p<UART_BUFF_SIZE)
+    {
+        if(USART_GetITStatus(UART4, USART_IT_RXNE) != RESET)
+        {
+            uart_buff[uart_p] = USART_ReceiveData(UART4);
+            uart_p++;
+
+						USART_ClearITPendingBit(UART4, USART_IT_RXNE);
+        }
+    }
+		else
+		{
+			USART_ClearITPendingBit(UART4, USART_IT_RXNE);
+			clean_rebuff();       
+		}
 }
-#endif	
+
+//获取接收到的数据和长度
+char *get_rebuff(uint16_t *len) 
+{
+    *len = uart_p;
+    return (char *)&uart_buff;
+}
+
+//清空缓冲区
+void clean_rebuff(void) 
+{
+
+    uint16_t i=UART_BUFF_SIZE+1;
+    uart_p = 0;
+	while(i)
+		uart_buff[--i]=0;
+
+}
+
+
+void PT100_init(void)
+{
+    _485_SendStr_length(data1, 8);
+    _485_SendStr_length(data2, 8);
+    _485_SendStr_length(data3, 8);
+	
+}
+
+void Get_PT100_data(void)
+{
+    _485_SendStr_length(data4, 8);
+}
+
+TemperatureData PT100_data(void)
+{
+    uint16_t len;
+    uint16_t hex1, hex2;  
+    float dec1, dec2;
+    float data1, data2;
+    TemperatureData result_temp = {0, 0};  
+
+    pbuf = get_rebuff(&len);
+
+    if(len >= 11)  
+    {
+        if(pbuf[0]==0x01&&pbuf[1]==0x04&&pbuf[2]==0x06)
+        {
+            hex1 = (pbuf[3]<<8) + pbuf[4];    
+            dec1 = (float)hex1;
+            data1 = dec1/249;
+            result_temp.temperature1 = (int)((((data1-4)/16)*140)-40)+1.3;
+
+            hex2 = (pbuf[5]<<8) + pbuf[6];    
+            dec2 = (float)hex2;
+//		printf("提取的16进制字符串: %04x\n", hex2 );
+//		printf("转换为十进制: %f\n", dec2);
+            data2 = dec2/249;
+            result_temp.temperature2 = (int)((((data2-4)/16)*140)-40)+1.3;
+
+            clean_rebuff();
+        }
+    }
+    return result_temp;  
+}
 
 
 
+//int PT100_data (void)
+//{
+//    uint16_t len;
+//    uint16_t hex;  // 用于存储提取的两位16进制数，需要3个字节来存储字符串
+//    float dec;
+//    float data;
 
+//    pbuf = get_rebuff(&len);
 
+//    if(len >= 11)  // 确保接收到的数据长度足够
+//    {
+//      if(pbuf[0]==0x01&&pbuf[1]==0x04&&pbuf[2]==0x06)
+//      {
+//        hex = (pbuf[3]<<8) + pbuf[4];    
+//        //_485_DEBUG_ARRAY((uint8_t*)pbuf,len);        
+//        dec = (float)hex;
+////        printf("提取的16进制字符串: %04x\n", hex);
+////        printf("转换为十进制: %f\n", dec);                
+//        data = dec/249;
+////        printf("输出电流为: %f mA \n", data);                
+//        data_t = (int)((((data-4)/16)*140)-40)+1.3;                
+////        printf("输出温度为: %d C \n", data_t);
+//        clean_rebuff();
+//      }
 
-
-
-
+//    }
+//    return data_t;
+//}
 
 
 

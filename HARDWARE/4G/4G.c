@@ -598,8 +598,9 @@ void Control_Led(void)
 		strx=strstr((const char*)buf_uart2.buf,(const char*)"\"btn1\":1");//返回+QMTRECV:，表明接收到服务器发回的数据 开灯1
     if(strx)
 		{
-			Gui_DrawFont_GBK16(16,10,RED,WHITE, "TURN ON LED1");  
-			LED1=0;
+			Gui_DrawFont_GBK16(16,10,RED,WHITE, "REBOOTING STM32");  
+//			LED1=0;
+			NVIC_SystemReset();
 			buf_uart2.index=0;
 			memset(buf_uart2.buf,0,BUFLEN);
 			return ;
@@ -608,7 +609,7 @@ void Control_Led(void)
     if(strx)
 		{
 			Gui_DrawFont_GBK16(16,10,RED,WHITE, "TURNOFF LED1");  
-			LED1=1;
+//			LED1=1;
 			buf_uart2.index=0;
 			memset(buf_uart2.buf,0,BUFLEN);
 			return ;

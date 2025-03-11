@@ -29,6 +29,15 @@ extern UART_BUF buf_uart1;     //PC
 extern UART_BUF buf_uart2;     //4G
 extern UART_BUF buf_uart3;     //TTL
 
+extern uint8_t UART3_RX_BUF[];  //
+extern uint8_t UART3_RX_Index;
+
+extern double value_xishu;
+extern double value_yuliang;
+extern uint16_t value_shiji;
+extern uint16_t last_value;
+extern uint32_t value_yuanshi;  // 定义解析出的32位无符号整数
+
 #endif
 
 
