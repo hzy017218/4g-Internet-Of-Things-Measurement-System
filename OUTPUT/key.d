@@ -1,0 +1,17 @@
+..\output\key.o: ..\HARDWARE\key\key.c
+..\output\key.o: ..\HARDWARE\key\key.h
+..\output\key.o: ..\SYSTEM\sys\sys.h
+..\output\key.o: ..\USER\stm32f10x.h
+..\output\key.o: ..\CORE\core_cm3.h
+..\output\key.o: D:\Keil\ARM\ARM\ARMCC\Bin\..\include\stdint.h
+..\output\key.o: ..\USER\system_stm32f10x.h
+..\output\key.o: ..\USER\stm32f10x_conf.h
+..\output\key.o: ..\STM32F10x_FWLib\inc\stm32f10x_adc.h
+..\output\key.o: ..\USER\stm32f10x.h
+..\output\key.o: ..\STM32F10x_FWLib\inc\stm32f10x_can.h
+..\output\key.o: ..\STM32F10x_FWLib\inc\stm32f10x_fsmc.h
+..\output\key.o: ..\STM32F10x_FWLib\inc\stm32f10x_gpio.h
+..\output\key.o: ..\STM32F10x_FWLib\inc\stm32f10x_rcc.h
+..\output\key.o: ..\STM32F10x_FWLib\inc\stm32f10x_usart.h
+..\output\key.o: ..\STM32F10x_FWLib\inc\misc.h
+..\output\key.o: ..\SYSTEM\delay\delay.h
