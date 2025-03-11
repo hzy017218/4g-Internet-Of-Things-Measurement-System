@@ -7,16 +7,6 @@
 #include "led.h"
 #include "4G.h"
 //////////////////////////////////////////////////////////////////
-#define RX_BUF_SIZE 9  //
-
-uint8_t UART3_RX_BUF[RX_BUF_SIZE];  // 
-uint8_t UART3_RX_Index = 0;  //
-volatile uint8_t dataReady = 0; // 数据准备标志
-uint32_t value_yuanshi;  // 定义解析出的32位无符号整数
-uint16_t value_shiji;
-uint16_t last_value;  // 定义解析出的16位无符号整数
-double value_xishu = 16.525;    //转换系数
-double value_yuliang = 0;    //调整余
 
 //加入以下代码,支持printf函数,而不需要选择use MicroLIB	  
 #if 1
@@ -312,41 +302,14 @@ void USART2_IRQHandler(void)                            //串口2接收函数
     }
 }
 
-void USART3_IRQHandler(void)  // 串口3中断服务程序
+void USART3_IRQHandler(void)                                //串口3中断服务程序
 {
-    uint8_t Res;
-
-    if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)  // 检查接收中断
+    if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)   //接收模块返回的数据
     {
-        Res = USART_ReceiveData(USART3);  // 读取接收到的数据
+        buf_uart3.buf[buf_uart3.index++]=USART_ReceiveData(USART3);  //接收模块的数据;
+    } 
 
-        // 将接收到的字节存储到缓冲区
-        UART3_RX_BUF[UART3_RX_Index++] = Res;
-
-        // 检查是否接收到完整的9字节数据包
-        if (UART3_RX_Index >= RX_BUF_SIZE) {
-            // 解析接收到的数据包
-            dataReady = 1;
-            if (UART3_RX_BUF[0] == 0x01 && UART3_RX_BUF[1] == 0x03 && UART3_RX_BUF[2] == 0x04) {
-                // 提取数据的第4到第7字节，并将其转换为32位无符号整数
-                value_yuanshi = (UART3_RX_BUF[3] << 24) | (UART3_RX_BUF[4] << 16) | 
-                                (UART3_RX_BUF[5] << 8) | UART3_RX_BUF[6];
-
-                // 计算实际值
-                value_shiji = 4000 - value_yuanshi / value_xishu + value_yuliang - 320;
-
-                // 输出数据，可以通过串口或其他方式打印
-//                printf("Parsed Data: %u\n", value_shiji);
-            }
-
-            //  重置索引，准备接收下一个9字节的数据包
-            UART3_RX_Index = 0;
-        }
-
-        //清除中断标志
-        USART_ClearITPendingBit(USART3, USART_IT_RXNE);
-    }
-}
+} 	
 
 
 

@@ -16,14 +16,14 @@ u8 UART4_TX_BUF[UART4_SEND_LEN];     //接收缓冲,最大USART_REC_LEN个字节.
 //bit15，	接收完成标志
 //bit14，	接收到0x0d
 //bit13~0，	接收到的有效字节数目
-//volatile uint8_t dataReady = 0; // 数据准备标志
+volatile uint8_t dataReady = 0; // 数据准备标志
 u16 UART4_RX_STA=0;       //接收状态标记
-//uint32_t value_yuanshi;  // 定义解析出的32位无符号整数
-//uint16_t value_shiji;
-//uint16_t last_value;  // 定义解析出的16位无符号整数
-//double value_xishu = 16.525;    //转换系数
+uint32_t value_yuanshi;  // 定义解析出的32位无符号整数
+uint16_t value_shiji;
+uint16_t last_value;  // 定义解析出的16位无符号整数
+double value_xishu = 16.525;    //转换系数
 uint8_t UART4_RX_Index = 0;  // 当前接收字节的索引
-//double value_yuliang = 0;    //调整余量
+double value_yuliang = 0;    //调整余量
 
 //初始化IO 串口2
 //pclk1:PCLK1时钟频率(Mhz)

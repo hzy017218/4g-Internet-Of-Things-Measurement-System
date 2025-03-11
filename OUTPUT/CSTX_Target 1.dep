@@ -15,7 +15,7 @@ I (..\STM32F10x_FWLib\inc\stm32f10x_rcc.h)(0x4D783BB4)
 I (..\STM32F10x_FWLib\inc\stm32f10x_usart.h)(0x4D783BB4)
 I (..\STM32F10x_FWLib\inc\misc.h)(0x4D783BB4)
 I (..\SYSTEM\delay\delay.h)(0x5837B94B)
-I (..\SYSTEM\usart\usart.h)(0x67BEDDFD)
+I (..\SYSTEM\usart\usart.h)(0x66C836E0)
 I (D:\keil5\ARM\ARMCC\include\stdio.h)(0x588B8344)
 I (D:\keil5\ARM\ARMCC\include\math.h)(0x588B8344)
 I (..\STM32F10x_FWLib\inc\stm32f10x_flash.h)(0x4D783BB4)
@@ -428,14 +428,14 @@ I (..\STM32F10x_FWLib\inc\stm32f10x_rcc.h)(0x4D783BB4)
 I (..\STM32F10x_FWLib\inc\stm32f10x_usart.h)(0x4D783BB4)
 I (..\STM32F10x_FWLib\inc\misc.h)(0x4D783BB4)
 I (..\HARDWARE\LED\led.h)(0x611D10EB)
-I (..\SYSTEM\usart\usart.h)(0x67BEDDFD)
+I (..\SYSTEM\usart\usart.h)(0x66C836E0)
 I (D:\keil5\ARM\ARMCC\include\stdio.h)(0x588B8344)
 I (..\STM32F10x_FWLib\inc\stm32f10x_tim.h)(0x4D783BB4)
 I (..\HARDWARE\4G\4G.h)(0x66D2D8CD)
 I (..\SYSTEM\delay\delay.h)(0x5837B94B)
 F (..\HARDWARE\4G\4G.c)(0x676A6747)(-c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork -I ..\CORE -I ..\HARDWARE\LED -I ..\HARDWARE\WDG -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\TIMER -I ..\HARDWARE\RS485 -I ..\HARDWARE\4G -I ..\HARDWARE\LCD -I ..\HARDWARE\rs485 -I ..\HARDWARE\dht11 -I ..\HARDWARE\ADC-I.\RTE\_Target_1-ID:\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-ID:\keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\4g.o --omf_browse ..\output\4g.crf --depend ..\output\4g.d)
 I (..\HARDWARE\4G\4G.h)(0x66D2D8CD)
-I (..\SYSTEM\usart\usart.h)(0x67BEDDFD)
+I (..\SYSTEM\usart\usart.h)(0x66C836E0)
 I (D:\keil5\ARM\ARMCC\include\stdio.h)(0x588B8344)
 I (..\SYSTEM\sys\sys.h)(0x5837B94B)
 I (..\USER\stm32f10x.h)(0x4D783CB4)
@@ -495,7 +495,7 @@ I (..\HARDWARE\LCD\Lcd_Driver.h)(0x66794883)
 I (..\HARDWARE\LCD\LCD_Config.h)(0x563A20B9)
 I (..\SYSTEM\delay\delay.h)(0x5837B94B)
 I (..\SYSTEM\sys\sys.h)(0x5837B94B)
-F (..\HARDWARE\LCD\QDTFT_demo.c)(0x67BEDF6F)(-c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork -I ..\CORE -I ..\HARDWARE\LED -I ..\HARDWARE\WDG -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\TIMER -I ..\HARDWARE\RS485 -I ..\HARDWARE\4G -I ..\HARDWARE\LCD -I ..\HARDWARE\rs485 -I ..\HARDWARE\dht11 -I ..\HARDWARE\ADC-I.\RTE\_Target_1-ID:\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-ID:\keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\qdtft_demo.o --omf_browse ..\output\qdtft_demo.crf --depend ..\output\qdtft_demo.d)
+F (..\HARDWARE\LCD\QDTFT_demo.c)(0x6679590F)(-c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork -I ..\CORE -I ..\HARDWARE\LED -I ..\HARDWARE\WDG -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\TIMER -I ..\HARDWARE\RS485 -I ..\HARDWARE\4G -I ..\HARDWARE\LCD -I ..\HARDWARE\rs485 -I ..\HARDWARE\dht11 -I ..\HARDWARE\ADC-I.\RTE\_Target_1-ID:\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-ID:\keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\qdtft_demo.o --omf_browse ..\output\qdtft_demo.crf --depend ..\output\qdtft_demo.d)
 I (..\USER\stm32f10x.h)(0x4D783CB4)
 I (..\CORE\core_cm3.h)(0x4D523B58)
 I (D:\keil5\ARM\ARMCC\include\stdint.h)(0x588B8344)
@@ -513,7 +513,7 @@ I (..\HARDWARE\LCD\GUI.h)(0x5462DF2B)
 I (..\SYSTEM\delay\delay.h)(0x5837B94B)
 I (..\SYSTEM\sys\sys.h)(0x5837B94B)
 I (..\HARDWARE\LCD\QDTFT_demo.h)(0x63DF8D26)
-F (..\HARDWARE\rs485\rs485.c)(0x67BEDDFD)(-c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork -I ..\CORE -I ..\HARDWARE\LED -I ..\HARDWARE\WDG -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\TIMER -I ..\HARDWARE\RS485 -I ..\HARDWARE\4G -I ..\HARDWARE\LCD -I ..\HARDWARE\rs485 -I ..\HARDWARE\dht11 -I ..\HARDWARE\ADC-I.\RTE\_Target_1-ID:\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-ID:\keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\rs485.o --omf_browse ..\output\rs485.crf --depend ..\output\rs485.d)
+F (..\HARDWARE\rs485\rs485.c)(0x676A69F0)(-c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork -I ..\CORE -I ..\HARDWARE\LED -I ..\HARDWARE\WDG -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\TIMER -I ..\HARDWARE\RS485 -I ..\HARDWARE\4G -I ..\HARDWARE\LCD -I ..\HARDWARE\rs485 -I ..\HARDWARE\dht11 -I ..\HARDWARE\ADC-I.\RTE\_Target_1-ID:\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-ID:\keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\rs485.o --omf_browse ..\output\rs485.crf --depend ..\output\rs485.d)
 I (..\SYSTEM\sys\sys.h)(0x5837B94B)
 I (..\USER\stm32f10x.h)(0x4D783CB4)
 I (..\CORE\core_cm3.h)(0x4D523B58)
@@ -528,7 +528,7 @@ I (..\STM32F10x_FWLib\inc\stm32f10x_rcc.h)(0x4D783BB4)
 I (..\STM32F10x_FWLib\inc\stm32f10x_usart.h)(0x4D783BB4)
 I (..\STM32F10x_FWLib\inc\misc.h)(0x4D783BB4)
 I (..\HARDWARE\rs485\rs485.h)(0x676A69F0)
-I (..\SYSTEM\usart\usart.h)(0x67BEDDFD)
+I (..\SYSTEM\usart\usart.h)(0x66C836E0)
 I (D:\keil5\ARM\ARMCC\include\stdio.h)(0x588B8344)
 I (..\SYSTEM\delay\delay.h)(0x5837B94B)
 I (..\HARDWARE\LED\led.h)(0x611D10EB)
@@ -596,7 +596,7 @@ I (..\STM32F10x_FWLib\inc\stm32f10x_gpio.h)(0x4D783BB4)
 I (..\STM32F10x_FWLib\inc\stm32f10x_rcc.h)(0x4D783BB4)
 I (..\STM32F10x_FWLib\inc\stm32f10x_usart.h)(0x4D783BB4)
 I (..\STM32F10x_FWLib\inc\misc.h)(0x4D783BB4)
-F (..\SYSTEM\usart\usart.c)(0x67BEDF30)(-c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork -I ..\CORE -I ..\HARDWARE\LED -I ..\HARDWARE\WDG -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\TIMER -I ..\HARDWARE\RS485 -I ..\HARDWARE\4G -I ..\HARDWARE\LCD -I ..\HARDWARE\rs485 -I ..\HARDWARE\dht11 -I ..\HARDWARE\ADC-I.\RTE\_Target_1-ID:\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-ID:\keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\usart.o --omf_browse ..\output\usart.crf --depend ..\output\usart.d)
+F (..\SYSTEM\usart\usart.c)(0x6662D5B7)(-c --cpu Cortex-M3 -D__MICROLIB -g -O1 --apcs=interwork -I ..\CORE -I ..\HARDWARE\LED -I ..\HARDWARE\WDG -I ..\STM32F10x_FWLib\inc -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\HARDWARE\TIMER -I ..\HARDWARE\RS485 -I ..\HARDWARE\4G -I ..\HARDWARE\LCD -I ..\HARDWARE\rs485 -I ..\HARDWARE\dht11 -I ..\HARDWARE\ADC-I.\RTE\_Target_1-ID:\keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include-ID:\keil5\ARM\CMSIS\Include-D__UVISION_VERSION="524" -DSTM32F10X_HD -DSTM32F10X_HD -DUSE_STDPERIPH_DRIVER-o ..\output\usart.o --omf_browse ..\output\usart.crf --depend ..\output\usart.d)
 I (..\SYSTEM\sys\sys.h)(0x5837B94B)
 I (..\USER\stm32f10x.h)(0x4D783CB4)
 I (..\CORE\core_cm3.h)(0x4D523B58)
@@ -610,7 +610,7 @@ I (..\STM32F10x_FWLib\inc\stm32f10x_gpio.h)(0x4D783BB4)
 I (..\STM32F10x_FWLib\inc\stm32f10x_rcc.h)(0x4D783BB4)
 I (..\STM32F10x_FWLib\inc\stm32f10x_usart.h)(0x4D783BB4)
 I (..\STM32F10x_FWLib\inc\misc.h)(0x4D783BB4)
-I (..\SYSTEM\usart\usart.h)(0x67BEDDFD)
+I (..\SYSTEM\usart\usart.h)(0x66C836E0)
 I (D:\keil5\ARM\ARMCC\include\stdio.h)(0x588B8344)
 I (D:\keil5\ARM\ARMCC\include\string.h)(0x588B8344)
 I (..\STM32F10x_FWLib\inc\stm32f10x_tim.h)(0x4D783BB4)
